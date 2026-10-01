@@ -271,7 +271,7 @@ class StageOptimizer(object):
             # loss vals (list len T of loss value lists)
             times, loss_vals = zip(*loss_dict.items())
             plt.figure()
-            plt.boxplot(loss_vals, labels=times, showfliers=False)
+            plt.boxplot(loss_vals, tick_labels=times, showfliers=False)
             plt.savefig(f"{res_dir}/{loss_name}.png")
 
     def run(self, obs_data, num_iters, out_dir, vis=None, writer=None):

@@ -48,10 +48,10 @@ sys.path.append('src/human_body_prior')
 sys.path.append('HMP/')
 # print(sys.path)
 # print(torch.cuda.memory_summary())
-from HMP.fitting import run_prior
-
-from human_body_prior.tools.model_loader import load_model
-from human_body_prior.models.vposer_model import VPoser
+# HMP (motion prior) and human_body_prior are imported lazily inside the
+# `cfg.run_prior` branch below: their import chains need `human_body_prior`
+# (absent here) and hit numpy>=1.24 removals, and neither is reachable when
+# run_prior is False (the default).
 
 def set_seed(seed=42):
     """
@@ -163,6 +163,7 @@ def run_opt(cfg, dataset, out_dir, device):
 
     # HMP
     if cfg.run_prior and not os.path.exists(os.path.join(out_dir, 'prior')):
+        from HMP.fitting import run_prior  # see the note at the top of this file
         run_prior(cfg, dataset, out_dir, device, ['smooth_fit'], \
         obs_data, hand_model, cfg, cfg.data, os.path.join(out_dir, 'prior'))
     d = time.time()

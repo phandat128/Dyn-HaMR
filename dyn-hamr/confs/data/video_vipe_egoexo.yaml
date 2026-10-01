@@ -1,0 +1,38 @@
+# Dyn-HaMR + ViPE for an egoexo recording (see ../../../VIPE_INSTALL.md).
+#
+# Unlike video_vipe.yaml this keeps the recording in place rather than copying
+# it into a `videos/` staging dir: `src_path` points straight at the capture's
+# rgb.mp4 and `root` is the recording directory, so every derived artifact
+# (images/, dynhamr/) lands beside the source video.
+#
+# Override `data.root` to point at a different recording; `seq` must stay
+# `rgb`, because ViPE names its outputs after the video's filename stem and
+# preprocess_cameras() looks them up as <vipe_dir>/pose/${data.seq}.npz.
+type: video
+split: custom
+root: /workspace/egoexo/recordings/19700101T082533+08
+video_dir: .
+seq: rgb
+ext: mp4
+src_path: ${data.root}/${data.seq}.${data.ext}
+frame_opts:
+  ext: jpg
+  fps: 30
+  start_sec: 0
+  end_sec: -1
+use_cams: True
+track_ids: "all"
+shot_idx: 0
+start_idx: 0
+end_idx: -1
+split_cameras: True
+name: ${data.seq}-${data.track_ids}-shot-${data.shot_idx}-${data.start_idx}-${data.end_idx}
+sources:
+  images: ${data.root}/dyn_hamr_output/images/${data.seq}
+  cameras: ${data.root}/dyn_hamr_output/dynhamr/cameras/${data.seq}/shot-${data.shot_idx}
+  tracks: ${data.root}/dyn_hamr_output/dynhamr/track_preds/${data.seq}
+  shots: ${data.root}/dyn_hamr_output/dynhamr/shot_idcs/${data.seq}.json
+
+# ViPE camera estimation (in place of DROID-SLAM).
+use_vipe: True
+vipe_dir: /workspace/egoexo/external/Dyn-HaMR/third-party/vipe/vipe_results
